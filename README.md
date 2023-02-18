@@ -22,16 +22,18 @@ Our thermometer records three temperatures every thirty seconds (two readings ev
 1. the temperature of the first of two foods, Food A.
 1. the temperature for the second of two foods, Food B.
 
-## Assignment TasksSmart Smoker System
-* Read about the Smart Smoker system here: Smart Smoker
-* We read one value every half minute. (sleep_secs = 30)
+## Assignment Tasks
+
+# Smart Smoker System
+* Read about the Smart Smoker system here: Smart Smoker - DONE
+* We read one value every half minute. (sleep_secs = 30) - DONE
 
 smoker-temps.csv has 4 columns:
 
 1. Time = Date-time stamp for the sensor reading
 1. Channel1 = Smoker Temp --> send to message queue "01-smoker"
-1. Channe2 = Food A Temp --> send to message queue "02-food-A"
-1. Channe3 = Food B Temp --> send to message queue "02-food-B"
+1. Channel2 = Food A Temp --> send to message queue "02-food-A"
+1. Channel3 = Food B Temp --> send to message queue "02-food-B"
 
 We want know if:
 
@@ -55,12 +57,12 @@ Condition To monitor
 
 Requirements
 
-* RabbitMQ server running
-* pika installed in your active environment
+* RabbitMQ server running - DONE
+* pika installed in your active environment - DONE
 
 RabbitMQ Admin
 
-* See http://localhost:15672/Links to an external site.
+* See http://localhost:15672/Links to an external site. - DONE
 
 General Design 
 
@@ -70,7 +72,7 @@ General Design
  
 
 # Task 1. Open Your Existing Project
-1. On your machine, open your existing streaming-05-getting-started repo in VS Code.
+1. On your machine, open your existing streaming-05-getting-started repo in VS Code. - DONE
 1. Create a file for your consumer (or 3 files if you'd like to use 3 consumers).
  
 
