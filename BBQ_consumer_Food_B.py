@@ -17,22 +17,23 @@ from collections import deque
 
 # define variables
 host = "localhost"
-queue1 = "01-smoker"
+queue3 = "03-food-B"
 
-# define deque for smoker queue
+# define deque for Food B queue
 
-queue1_deque = deque(maxlen=5)
+queue3_deque = deque(maxlen=20)
 
 # set alert for significant event/temperature change 
 # if temperature changes by this amount, generate alert
 
-queue1_alert = 15
+queue3_alert = 1
 
 # define a callback function to be called when a message is received
 def BBQ_callback(ch, method, properties, body):
     """ Define behavior on getting a message."""
+    message = body.decode()
     # decode the binary message body to a string
-    print(f" [x] Received {body.decode()}")
+    print(f" [x] Received {message} on 03-food-B")
     # simulate work by sleeping for the number of dots in the message
     time.sleep(body.count(b"."))
     # when done with task, tell the user
@@ -41,6 +42,32 @@ def BBQ_callback(ch, method, properties, body):
     # (now it can be deleted from the queue)
     ch.basic_ack(delivery_tag=method.delivery_tag)
     time.sleep(1)
+
+    # create initial Food B deque with parameters that store x amount of messages
+    queue3_deque.append(message)
+    # establish first deque item
+    foodB_deque_item = queue3_deque[0]
+    # split temperature and timestamp to create list
+    foodB_deque_split = foodB_deque_item.split(",")
+    # convert tempmerature to correct format
+    foodB_deque_temp1 = float(foodB_deque_split[1][:-1])
+
+    # create current Food B temp with parameters
+    foodB_deque_current = message
+    # establish first deque item
+    foodB_deque_itemc = queue3_deque[0]
+    # split temperature and timestamp to create list
+    foodB_deque_splitc = foodB_deque_itemc.split(",")
+    # convert tempmerature to correct format
+    foodB_deque_tempc = float(foodB_deque_splitc[1][:-1])
+
+    # define and calculate change in temperature 
+    foodB_temp_change = round(foodB_deque_temp1 - foodB_deque_tempc, 1)
+
+    # create alert for Food B if significant event
+    if foodB_temp_change >= queue3_alert:
+        print(f" ALERT:  Food B temperature has changed beyond the threshold. \n          Food B temp decrease = {foodB_temp_change} degrees F = {foodB_deque_temp1} - {foodB_deque_tempc}")
+
 
 # define a main function to run the program
 def main(hn: str = "localhost", qn: str = "task_queue"):
@@ -69,7 +96,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # a durable queue will survive a RabbitMQ server restart
         # and help ensure messages are processed in order
         # messages will not be deleted until the consumer acknowledges
-        channel.queue_declare(queue=queue1, durable=True)
+        channel.queue_declare(queue=queue3, durable=True)
 
         # The QoS level controls the # of messages
         # that can be in-flight (unacknowledged by the consumer)
@@ -84,7 +111,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # configure the channel to listen on a specific queue,  
         # use the callback function named callback,
         # and do not auto-acknowledge the message (let the callback handle it)
-        channel.basic_consume(queue=queue1, on_message_callback=BBQ_callback, auto_ack=False)
+        channel.basic_consume(queue=queue3, on_message_callback=BBQ_callback)
 
         # print a message to the console for the user
         print(" [*] Ready for work. To exit press CTRL+C")
@@ -124,4 +151,4 @@ def delete_queue(host: str, queue_name: str):
 # If this is the program being run, then execute the code below
 if __name__ == "__main__":
     # call the main function with the information needed
-    main("localhost", "task_queue")
+    main("localhost", "queue3")

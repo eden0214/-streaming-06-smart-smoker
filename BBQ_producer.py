@@ -1,7 +1,6 @@
 """
     This program sends a message to a queue on the RabbitMQ server.
     We want to stream information from a smart smoker. Read one value every half minute.
-
     Author: Eden Anderson
     Date: 2/11/2023
     Based on Module 4 Version 3 .py program
@@ -11,6 +10,7 @@
 
 import pika
 import sys
+import numpy as np
 import webbrowser
 import socket
 import csv
@@ -35,7 +35,6 @@ def send_message(host: str, queue_name: str, message: str):
     """
     Creates and sends a message to the queue each execution.
     This process runs and finishes.
-
     Parameters:
         host (str): the host name or IP address of the RabbitMQ server
         queue1 (str): the queue for the smoker temperature reading/Channel 1
@@ -53,10 +52,7 @@ def send_message(host: str, queue_name: str, message: str):
         # a durable queue will survive a RabbitMQ server restart
         # and help ensure messages are processed in order
 
-        # Make sure to delete previous messages from queues
-        ch.queue_delete(queue1)
-        ch.queue_delete(queue2)
-        ch.queue_delete(queue3)
+       
         # messages will not be deleted until the consumer acknowledges
         ch.queue_declare(queue=queue_name, durable=True)
         # use the channel to publish a message to the queue
@@ -92,18 +88,21 @@ for row in reader:
 # send message to queue1 from Channel1
         try:
 
+            if float(Channel1) >= 0:
+
     # use an fstring to create a message from our data
     # notice the f before the opening quote for our string?
-            fstring_message = f"[{Time}, {Channel1}]"
+                fstring_message = f"[{Time}, {Channel1}]"
     
     # prepare a binary (1s and 0s) message to stream
-            message = fstring_message.encode()
+                message = fstring_message.encode()
 
     # use the socket sendto() method to send the message
-            send_message("localhost","queue1",message)
-            print (f"Sent: {message} on queue1")
-
+                send_message("localhost","queue1",message)
+                print (f"Sent: {message} on queue1")
         except ValueError:
+            pass
+        else:
             pass
 
  # send message to queue1 from Channel2
@@ -160,5 +159,3 @@ if __name__ == "__main__":
     message = " ".join(sys.argv[1:]) or "BBQ Producer....."
     # send the message to the queue
     send_message("localhost","queue1",message)
-
-

@@ -73,7 +73,7 @@ General Design
 
 # Task 1. Open Your Existing Project
 1. On your machine, open your existing streaming-05-getting-started repo in VS Code. - DONE
-1. Create a file for your consumer (or 3 files if you'd like to use 3 consumers).
+1. Create a file for your consumer (or 3 files if you'd like to use 3 consumers). - DONE
  
 
 # Task 2. Design and Implement Each Consumer

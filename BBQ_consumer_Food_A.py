@@ -17,22 +17,23 @@ from collections import deque
 
 # define variables
 host = "localhost"
-queue1 = "01-smoker"
+queue2 = "02-food-A"
 
-# define deque for smoker queue
+# define deque for Food A queue
 
-queue1_deque = deque(maxlen=5)
+queue2_deque = deque(maxlen=20)
 
 # set alert for significant event/temperature change 
 # if temperature changes by this amount, generate alert
 
-queue1_alert = 15
+queue2_alert = 11
 
 # define a callback function to be called when a message is received
 def BBQ_callback(ch, method, properties, body):
     """ Define behavior on getting a message."""
+    message = body.decode()
     # decode the binary message body to a string
-    print(f" [x] Received {body.decode()}")
+    print(f" [x] Received {message} on 02-food-A")
     # simulate work by sleeping for the number of dots in the message
     time.sleep(body.count(b"."))
     # when done with task, tell the user
@@ -41,6 +42,32 @@ def BBQ_callback(ch, method, properties, body):
     # (now it can be deleted from the queue)
     ch.basic_ack(delivery_tag=method.delivery_tag)
     time.sleep(1)
+
+    # create initial smoker deque with parameters that store x amount of messages
+    queue2_deque.append(message)
+    # establish first deque item
+    foodA_deque_item = queue2_deque[0]
+    # split temperature and timestamp to create list
+    foodA_deque_split = foodA_deque_item.split(",")
+    # convert tempmerature to correct format
+    foodA_deque_temp1 = float(foodA_deque_split[1][:-1])
+
+    # create current smoker temp with parameters
+    foodA_deque_current = message
+    # establish first deque item
+    foodA_deque_itemc = queue2_deque[0]
+    # split temperature and timestamp to create list
+    foodA_deque_splitc = foodA_deque_itemc.split(",")
+    # convert tempmerature to correct format
+    foodA_deque_tempc = float(foodA_deque_splitc[1][:-1])
+
+    # define and calculate change in temperature 
+    foodA_temp_change = round(foodA_deque_temp1 - foodA_deque_tempc, 1)
+
+    # create alert for smoker if significant event
+    if foodA_temp_change >= queue2_alert:
+        print(f" ALERT:  Food A temperature has changed beyond the threshold. \n          Food A temp decrease = {foodA_temp_change} degrees F = {foodA_deque_temp1} - {foodA_deque_tempc}")
+
 
 # define a main function to run the program
 def main(hn: str = "localhost", qn: str = "task_queue"):
@@ -69,7 +96,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # a durable queue will survive a RabbitMQ server restart
         # and help ensure messages are processed in order
         # messages will not be deleted until the consumer acknowledges
-        channel.queue_declare(queue=queue1, durable=True)
+        channel.queue_declare(queue=queue2, durable=True)
 
         # The QoS level controls the # of messages
         # that can be in-flight (unacknowledged by the consumer)
@@ -84,7 +111,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # configure the channel to listen on a specific queue,  
         # use the callback function named callback,
         # and do not auto-acknowledge the message (let the callback handle it)
-        channel.basic_consume(queue=queue1, on_message_callback=BBQ_callback, auto_ack=False)
+        channel.basic_consume(queue=qn, on_message_callback=BBQ_callback)
 
         # print a message to the console for the user
         print(" [*] Ready for work. To exit press CTRL+C")
@@ -92,19 +119,12 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # start consuming messages via the communication channel
         channel.start_consuming()
 
-    # except, in the event of an error OR user stops the process, do this
-    except Exception as e:
-        print()
-        print("ERROR: something went wrong.")
-        print(f"The error says: {e}")
+    except pika.exceptions.AMQPConnectionError as e:
+        print(f"Error: Connection to RabbitMQ server failed: {e}")
         sys.exit(1)
-    except KeyboardInterrupt:
-        print()
-        print(" User interrupted continuous listening process.")
-        sys.exit(0)
     finally:
-        print("\nClosing connection. Goodbye.\n")
-        connection.close()
+        # close the connection to the server
+        connection.close() 
 
 
 # use channel to create function to delete queue
@@ -124,4 +144,4 @@ def delete_queue(host: str, queue_name: str):
 # If this is the program being run, then execute the code below
 if __name__ == "__main__":
     # call the main function with the information needed
-    main("localhost", "task_queue")
+    main("localhost", "queue2")
