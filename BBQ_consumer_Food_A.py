@@ -26,7 +26,7 @@ queue2_deque = deque(maxlen=20)
 # set alert for significant event/temperature change 
 # if temperature changes by this amount, generate alert
 
-queue2_alert = 11
+queue2_alert = 1
 
 # define a callback function to be called when a message is received
 def BBQ_callback(ch, method, properties, body):
@@ -48,7 +48,7 @@ def BBQ_callback(ch, method, properties, body):
     # establish first deque item
     foodA_deque_item = queue2_deque[0]
     # split temperature and timestamp to create list
-    foodA_deque_split = foodA_deque_item.split(",")
+    foodA_deque_split = foodA_deque_item.split(", ")
     # convert tempmerature to correct format
     foodA_deque_temp1 = float(foodA_deque_split[1][:-1])
 
@@ -57,16 +57,16 @@ def BBQ_callback(ch, method, properties, body):
     # establish first deque item
     foodA_deque_itemc = queue2_deque[0]
     # split temperature and timestamp to create list
-    foodA_deque_splitc = foodA_deque_itemc.split(",")
+    foodA_deque_splitc = foodA_deque_itemc.split(", ")
     # convert tempmerature to correct format
     foodA_deque_tempc = float(foodA_deque_splitc[1][:-1])
 
     # define and calculate change in temperature 
-    foodA_temp_change = round(foodA_deque_temp1 - foodA_deque_tempc, 1)
+    foodA_temp_change = abs(round(foodA_deque_temp1 - foodA_deque_tempc, 1))
 
     # create alert for smoker if significant event
     if foodA_temp_change >= queue2_alert:
-        print(f" ALERT:  Food A temperature has changed beyond the threshold. \n          Food A temp decrease = {foodA_temp_change} degrees F = {foodA_deque_temp1} - {foodA_deque_tempc}")
+        print(f" ALERT:  Food A temperature has changed beyond the threshold (1 F within 10 minutes/20 readings). \n          Food A temp decrease = {foodA_temp_change} degrees F = {foodA_deque_temp1} - {foodA_deque_tempc}")
 
 
 # define a main function to run the program

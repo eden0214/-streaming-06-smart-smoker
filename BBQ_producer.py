@@ -139,8 +139,9 @@ for row in reader:
         except ValueError:
             pass
 
-# sleep for a few seconds
-        time.sleep(30)
+# sleep for a few seconds - 30 seconds in real-time
+# set to 1 for practice time
+        time.sleep(1)
 
 
 

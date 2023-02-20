@@ -19,7 +19,7 @@ from collections import deque
 host = "localhost"
 queue1 = "01-smoker"
 
-# define deque for smoker queue
+# define deque for Smoker queue
 
 queue1_deque = deque(maxlen=5)
 
@@ -43,13 +43,12 @@ def BBQ_callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
     time.sleep(1)
 
-
     # create initial smoker deque with parameters that store x amount of messages
     queue1_deque.append(message)
     # establish first deque item
     smoker_deque_item = queue1_deque[0]
     # split temperature and timestamp to create list
-    smoker_deque_split = smoker_deque_item.split(",")
+    smoker_deque_split = smoker_deque_item.split(", ")
     # convert tempmerature to correct format
     smoker_deque_temp1 = float(smoker_deque_split[1][:-1])
 
@@ -58,16 +57,16 @@ def BBQ_callback(ch, method, properties, body):
     # establish first deque item
     smoker_deque_itemc = queue1_deque[0]
     # split temperature and timestamp to create list
-    smoker_deque_splitc = smoker_deque_itemc.split(",")
+    smoker_deque_splitc = smoker_deque_itemc.split(", ")
     # convert tempmerature to correct format
     smoker_deque_tempc = float(smoker_deque_splitc[1][:-1])
 
     # define and calculate change in temperature 
-    smoker_temp_change = round(smoker_deque_temp1 - smoker_deque_tempc, 1)
+    smoker_temp_change = abs(round(smoker_deque_temp1 - smoker_deque_tempc, 1))
 
     # create alert for smoker if significant event
     if smoker_temp_change >= queue1_alert:
-        print(f" ALERT:  Smoker temperature has changed beyond the threshold. \n          Smoker temp decrease = {smoker_temp_change} degrees F = {smoker_deque_temp1} - {smoker_deque_tempc}")
+        print(f" ALERT:  Smoker temperature has changed beyond the threshold (15 F within 2.5 minutes/5 readings). \n          Smoker decrease = {smoker_temp_change} degrees F = {smoker_deque_temp1} - {smoker_deque_tempc}")
 
 
 # define a main function to run the program
@@ -112,7 +111,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # configure the channel to listen on a specific queue,  
         # use the callback function named callback,
         # and do not auto-acknowledge the message (let the callback handle it)
-        channel.basic_consume(queue=queue1, on_message_callback=BBQ_callback)
+        channel.basic_consume(queue=qn, on_message_callback=BBQ_callback)
 
         # print a message to the console for the user
         print(" [*] Ready for work. To exit press CTRL+C")
@@ -120,21 +119,12 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # start consuming messages via the communication channel
         channel.start_consuming()
 
-    # except, in the event of an error OR user stops the process, do this
-    except Exception as e:
-        print()
-        print("ERROR: something went wrong.")
-        print(f"The error says: {e}")
+    except pika.exceptions.AMQPConnectionError as e:
+        print(f"Error: Connection to RabbitMQ server failed: {e}")
         sys.exit(1)
-    except KeyboardInterrupt:
-        print()
-        print(" User interrupted continuous listening process.")
-        sys.exit(0)
-    except ValueError:
-        pass    
     finally:
-        print("\nClosing connection. Goodbye.\n")
-        connection.close()
+        # close the connection to the server
+        connection.close() 
 
 
 # use channel to create function to delete queue
