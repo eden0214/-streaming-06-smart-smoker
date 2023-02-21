@@ -58,6 +58,7 @@ def BBQ_callback(ch, method, properties, body):
     # define and calculate change in temperature 
     foodA_temp_change = abs(round(foodA_deque_temp1 - foodA_deque_tempc, 1))
 
+    # create alert for Food A if significant event
     if len(queue2_deque) == 20:
 
         # define and calculate change in temperature 

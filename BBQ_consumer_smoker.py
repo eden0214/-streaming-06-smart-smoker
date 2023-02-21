@@ -55,6 +55,7 @@ def BBQ_callback(ch, method, properties, body):
     # convert tempmerature to correct format
     smoker_deque_tempc = float(smoker_deque_splitc[1][:-1])
 
+    # create alert for smoker if significant event
     if len(queue1_deque) == 5:
 
         # define and calculate change in temperature 

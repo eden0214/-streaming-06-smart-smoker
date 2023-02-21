@@ -36,13 +36,7 @@ def BBQ_callback(ch, method, properties, body):
     print(f" [x] Received {message} on 02-food-B")
     # simulate work by sleeping for the number of dots in the message
     time.sleep(body.count(b"."))
-    # when done with task, tell the user
-    print(" [x] Done.")
-    # acknowledge the message was received and processed 
-    # (now it can be deleted from the queue)
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    time.sleep(1)
-
+   
     # create initial smoker deque with parameters that store x amount of messages
     queue3_deque.append(message)
     # establish first deque item
@@ -55,19 +49,30 @@ def BBQ_callback(ch, method, properties, body):
     # create current smoker temp with parameters
     foodB_deque_current = message
     # establish first deque item
-    foodB_deque_itemc = queue3_deque[0]
+    foodB_deque_itemc = queue3_deque[-1]
     # split temperature and timestamp to create list
     foodB_deque_splitc = foodB_deque_itemc.split(", ")
     # convert tempmerature to correct format
     foodB_deque_tempc = float(foodB_deque_splitc[1][:-1])
 
-    # define and calculate change in temperature 
-    foodB_temp_change = abs(round(foodB_deque_temp1 - foodB_deque_tempc, 1))
+    # create alert for Food B if significant event
+    if len(queue3_deque) == 20:
 
-    # create alert for smoker if significant event
-    if foodB_temp_change >= queue3_alert:
-        print(f" ALERT:  Food B temperature has changed beyond the threshold (1 F within 10 minutes/20 readings). \n          Food B temp change = {foodB_temp_change} degrees F = {foodB_deque_temp1} - {foodB_deque_tempc}")
+        # define and calculate change in temperature 
+        foodB_temp_change = round(foodB_deque_temp1 - foodB_deque_tempc, 1)
 
+        # create alert for smoker if significant event
+        if foodB_temp_change >= queue3_alert:
+            print(f" ALERT:  Food B temperature has changed beyond the threshold (1 F within 10 minutes/20 readings). \n          Food B temp change = {foodB_temp_change} degrees F = {foodB_deque_temp1} - {foodB_deque_tempc}")
+        else:
+            print("Current Food B temp is: ", foodB_deque_tempc)
+    else:
+            print("Current Food B temp is: ", foodB_deque_tempc)
+
+# acknowledge the message was received and processed 
+    # (now it can be deleted from the queue)
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+    time.sleep(1)
 
 # define a main function to run the program
 def main(hn: str = "localhost", qn: str = "task_queue"):
