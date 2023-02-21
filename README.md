@@ -77,12 +77,12 @@ General Design
  
 
 # Task 2. Design and Implement Each Consumer
-1. Design and implement each bbq consumer. You could have one. You could have 3.  More detailed 1. help provided in links below. 
-1. Use the logic, approach, and structure from prior modules (use the recommended versions).
-1. Modifying them to serve your purpose IS part of the assignment.
-1. Do not start from scratch - do not search for code - do not use a notebook.
-1. Use comments in the code and repo to explain your work. 
-1. Use docstring comments and add your name and date to your README and your code files. 
+1. Design and implement each bbq consumer. You could have one. You could have 3.  More detailed 1. help provided in links below. - DONE
+1. Use the logic, approach, and structure from prior modules (use the recommended versions). - DONE
+1. Modifying them to serve your purpose IS part of the assignment. - DONE
+1. Do not start from scratch - do not search for code - do not use a notebook. - DONE
+1. Use comments in the code and repo to explain your work. - DONE
+1. Use docstring comments and add your name and date to your README and your code files. - DONE
  
 
 # Task 3. Professionally Present your Project
@@ -102,30 +102,47 @@ General Design
 * Use the discussion forum when you get stuck.
 * Try to help without giving away code. 
 
+# Project Details
+* I started with my Module 5 git repository as the base for the producer, and I copied it into a new Module 6 repository.
+* After that, I used a consumer python file from Module 4 as a base to build on.  I was able to maintain most of the structure, but I did need to add the deque files and variables.
+* The hardest part for me was creating the code that would generate an alert when conditions were met.  To do so, I used the predefined variables and set up an if statement that produced a print() alert if the if statement was met.
+* Once I had one working consumer, I basically copied it twice more, editing the variables and queues as appropriate.
 
 # Requirements
-In your callback function, make sure you generate alerts - there will be a smoker alert and both Food A and Food B will stall. 
+In your callback function, make sure you generate alerts - there will be a smoker alert and both Food A and Food B will stall. - DONE
 
-Your README.md screenshots must show 4 concurrent processes:
+Your README.md screenshots must show 4 concurrent processes: (SEE BELOW)
 
-1. Producer (getting the temperature readings)
-1. Smoker monitor
-1. Food A monitor
-1. Food B monitor
+1. Producer (getting the temperature readings) - A6_producer_py.png
+1. Smoker monitor - A6_consumer_smoker_py.png
+1. Food A monitor - A6_consumer_FoodA_py.png
+1. Food B monitor - A6_consumer_FoodB_py.png
 In addition, you must show at least 3 significant events.
 
 Run each terminal long enough that you can show the significant events in your screenshots:
 
-1. Visible Smoker Alert with timestamp
-1. Visible Food A stall with timestamp
-1.  Food B stall with timestamp
+1. Visible Smoker Alert with timestamp - A6_consumer_smoker_py.png
+1. Visible Food A stall with timestamp - A6_consumer_FoodA_py.png
+1.  Food B stall with timestamp - A6_consumer_FoodB_py.png
 
-# Anaconda screenshot
-This shows the 3 queue messages being sent simultaneously through code
+## Screenshots
 
-![Window Example](A5_Anaconda.png)
+# Concurrent processes
+![Window Example](A6_concurrent_processing.png)
 
-# RabbitMQ screenshot
-This shows that the messages are being sent every 30 seconds.  I liked this visual.
+# Producer Screenshot
+![Window Example](A6_producer_py.png)
 
-![Window Example](A5_RabbitMQ.png)
+# Smoker with timestamp and alert
+![Window Example](A6_consumer_smoker_py.png)
+
+# Food A with timestamp and alert
+![Window Example](A6_consumer_FoodA_py.png)
+
+# Food B with timestamp and alert
+![Window Example](A6_consumer_FoodB_py.png)
+
+# RabbitMQ Screenshots
+![Window Example](A6_RabbitMQ_overview.png)
+
+![Window Example](A6_RabbitMQ_queues.png)
