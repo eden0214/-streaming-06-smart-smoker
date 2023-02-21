@@ -2,7 +2,7 @@
 ## Streaming Data 44671 / Module 6 Assignment
 
 # -streaming-06-smart-smoker
-Streaming Data 44671 Module 6 / Creating a Producer
+Streaming Data 44671 Module 6 / Creating a Consumer
 
 # The Problem / Challenge To Solve
 
@@ -86,13 +86,13 @@ General Design
  
 
 # Task 3. Professionally Present your Project
-1. Explain your project in the README.
-1. Include your name, date.
-1. Include prerequisites and how to run your code. 
-1. Explain and show how your project works. 
-1. Tell us what commands are needed. Use code fencing in GitHub or backtics for inline code to 1.share commands.
-1. Display screenshots of your console with the producer and consumer running.
-1. Display screenshots of at least one interesting part of the RabbitMQ console. 
+1. Explain your project in the README. - SEE BELOW
+1. Include your name, date. - DONE
+1. Include prerequisites and how to run your code. - DONE
+1. Explain and show how your project works. - SEE BELOW
+1. Tell us what commands are needed. Use code fencing in GitHub or backtics for inline code to 1.share commands. - DONE
+1. Display screenshots of your console with the producer and consumer running. - DONE
+1. Display screenshots of at least one interesting part of the RabbitMQ console. - DONE
 
 
 # More Guidance
@@ -106,6 +106,7 @@ General Design
 * I started with my Module 5 git repository as the base for the producer, and I copied it into a new Module 6 repository.
 * After that, I used a consumer python file from Module 4 as a base to build on.  I was able to maintain most of the structure, but I did need to add the deque files and variables.
 * The hardest part for me was creating the code that would generate an alert when conditions were met.  To do so, I used the predefined variables and set up an if statement that produced a print() alert if the if statement was met.
+    * Commands used: print(), len(), if statements, queue commands used in previous modules (declare, delete, etc.), connection commands used in previous modules, defined callbacks, defined main
 * Once I had one working consumer, I basically copied it twice more, editing the variables and queues as appropriate.
 
 # Requirements
