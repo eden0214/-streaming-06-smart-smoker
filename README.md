@@ -108,6 +108,7 @@ General Design
 * The hardest part for me was creating the code that would generate an alert when conditions were met.  To do so, I used the predefined variables and set up an if statement that produced a print() alert if the if statement was met.
     * Commands used: print(), len(), if statements, queue commands used in previous modules (declare, delete, etc.), connection commands used in previous modules, defined callbacks, defined main
 * Once I had one working consumer, I basically copied it twice more, editing the variables and queues as appropriate.
+* I relied heavily on previous code, but I also used the guidance provided above as well as the repos of my classmates.
 
 # Requirements
 In your callback function, make sure you generate alerts - there will be a smoker alert and both Food A and Food B will stall. - DONE
