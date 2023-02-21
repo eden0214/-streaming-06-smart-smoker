@@ -23,7 +23,7 @@ queue1 = "01-smoker"
 
 queue1_deque = deque(maxlen=5)
 
-# set alert for significant event/temperature change 
+# define alert threshold for significant event/temperature change 
 # if temperature changes by this amount, generate alert
 
 queue1_alert = 15
@@ -36,13 +36,7 @@ def BBQ_callback(ch, method, properties, body):
     print(f" [x] Received {message} on 01-smoker")
     # simulate work by sleeping for the number of dots in the message
     time.sleep(body.count(b"."))
-    # when done with task, tell the user
-    print(" [x] Done.")
-    # acknowledge the message was received and processed 
-    # (now it can be deleted from the queue)
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    time.sleep(1)
-
+    
     # create initial smoker deque with parameters that store x amount of messages
     queue1_deque.append(message)
     # establish first deque item
@@ -54,20 +48,30 @@ def BBQ_callback(ch, method, properties, body):
 
     # create current smoker temp with parameters
     smoker_deque_current = message
-    # establish first deque item
-    smoker_deque_itemc = queue1_deque[0]
+    # establish current deque item
+    smoker_deque_itemc = queue1_deque[-1]
     # split temperature and timestamp to create list
     smoker_deque_splitc = smoker_deque_itemc.split(", ")
     # convert tempmerature to correct format
     smoker_deque_tempc = float(smoker_deque_splitc[1][:-1])
 
-    # define and calculate change in temperature 
-    smoker_temp_change = abs(round(smoker_deque_temp1 - smoker_deque_tempc, 1))
+    if len(queue1_deque) == 5:
 
-    # create alert for smoker if significant event
-    if smoker_temp_change >= queue1_alert:
-        print(f" ALERT:  Smoker temperature has changed beyond the threshold (15 F within 2.5 minutes/5 readings). \n          Smoker decrease = {smoker_temp_change} degrees F = {smoker_deque_temp1} - {smoker_deque_tempc}")
+        # define and calculate change in temperature 
+        smoker_temp_change = round(smoker_deque_temp1 - smoker_deque_tempc, 1)
 
+        # create alert for smoker if significant event
+        if smoker_temp_change >= queue1_alert:
+            print(f" ALERT:  Smoker temperature has changed beyond the threshold (15 F within 2.5 minutes/5 readings). \n          Smoker temp change = {smoker_temp_change} degrees F = {smoker_deque_temp1} - {smoker_deque_tempc}")
+        else:
+            print("Current Smoker temp is: ", smoker_deque_tempc)
+    else:
+            print("Current Smoker temp is: ", smoker_deque_tempc)
+
+# acknowledge the message was received and processed 
+    # (now it can be deleted from the queue)
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+    time.sleep(1)
 
 # define a main function to run the program
 def main(hn: str = "localhost", qn: str = "task_queue"):

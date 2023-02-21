@@ -23,7 +23,7 @@ queue3 = "02-food-B"
 
 queue3_deque = deque(maxlen=20)
 
-# set alert for significant event/temperature change 
+# define alert threshold for significant event/temperature change 
 # if temperature changes by this amount, generate alert
 
 queue3_alert = 1
@@ -33,7 +33,7 @@ def BBQ_callback(ch, method, properties, body):
     """ Define behavior on getting a message."""
     message = body.decode()
     # decode the binary message body to a string
-    print(f" [x] Received {message} on 02-food-A")
+    print(f" [x] Received {message} on 02-food-B")
     # simulate work by sleeping for the number of dots in the message
     time.sleep(body.count(b"."))
     # when done with task, tell the user
@@ -66,7 +66,7 @@ def BBQ_callback(ch, method, properties, body):
 
     # create alert for smoker if significant event
     if foodB_temp_change >= queue3_alert:
-        print(f" ALERT:  Food B temperature has changed beyond the threshold (1 F within 10 minutes/20 readings). \n          Food B temp decrease = {foodB_temp_change} degrees F = {foodB_deque_temp1} - {foodB_deque_tempc}")
+        print(f" ALERT:  Food B temperature has changed beyond the threshold (1 F within 10 minutes/20 readings). \n          Food B temp change = {foodB_temp_change} degrees F = {foodB_deque_temp1} - {foodB_deque_tempc}")
 
 
 # define a main function to run the program
@@ -96,7 +96,7 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
         # a durable queue will survive a RabbitMQ server restart
         # and help ensure messages are processed in order
         # messages will not be deleted until the consumer acknowledges
-        channel.queue_declare(queue=3, durable=True)
+        channel.queue_declare(queue=queue3, durable=True)
 
         # The QoS level controls the # of messages
         # that can be in-flight (unacknowledged by the consumer)
@@ -144,4 +144,4 @@ def delete_queue(host: str, queue_name: str):
 # If this is the program being run, then execute the code below
 if __name__ == "__main__":
     # call the main function with the information needed
-    main("localhost", "queue3")
+    main("localhost", "queue2")
